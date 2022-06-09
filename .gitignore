@@ -1,5 +1,13 @@
 /.venv
+/.env
 __pycache__
 *.pyc
 *.pyo
 *.swp
+
+# Ignore saved data
+/db/channels
+/db/guilds
+/db/users
+/db/userwords
+/db/messages

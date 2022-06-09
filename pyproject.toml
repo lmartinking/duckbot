@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "duckbot"
+version = "0.0.1"
+description = "A discord bot for giggles"
+authors = ["Lucas Martin-King"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+"discord.py" = "^1.7.3"
+spacy = "^3.3.1"
+qPython = { git = "https://github.com/atf1206/qPython.git", branch = "fix_string_writer_utf8" }
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+rope = "^1.1.1"
+pytest-asyncio = "^0.18.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
