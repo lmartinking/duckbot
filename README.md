@@ -6,6 +6,14 @@
  * Stats per channel (message counts; chatty users)
  * Stats per server (message counts; chatty users)
 
+## Screenshots
+
+![User Stats](docs/user_stats.png)
+
+![Channel Stats](docs/channel_stats.png)
+
+![Server Stats](docs/server_stats.png)
+
 ## Privacy
 
 This bot records statistics and does **NOT** record whole messages.
