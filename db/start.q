@@ -125,6 +125,13 @@ get_userid_by_name: {
     first exec userid from users where name = x
  }
 
+message_counts_of_user_by_day: {
+    () xkey select messages: count messageid by timestamp.date from messages where userid = x
+ }
+
+user_sparkline: {
+    -30 # exec messages from message_counts_of_user_by_day x
+ }
 
 // Reports
 
@@ -134,7 +141,8 @@ user_stats: {[userid]
     top_verbs: first exec words from top_words where wordclass = `verb;
     top_nouns: first exec words from top_words where wordclass = `noun;
     top_adjs:  first exec words from top_words where wordclass = `adj;
-    (`total`verbs`nouns`adjs)!(total_words; top_verbs; top_nouns; top_adjs)
+    sparkline: user_sparkline userid;
+    (`total`verbs`nouns`adjs`spark)!(total_words; top_verbs; top_nouns; top_adjs; sparkline)
  }
 
 channel_stats: {[chid]
