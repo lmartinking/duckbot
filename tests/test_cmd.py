@@ -186,6 +186,7 @@ async def test_user_stats():
         'verbs': ['a', 'b'],
         'nouns': ['c', 'd'],
         'adjs':  ['e', 'f'],
+        'spark': [0, 1, 0, 1],
     }
 
     con = Mock(name='Connection')
@@ -199,6 +200,7 @@ async def test_user_stats():
       • **Top verbs**: a, b
       • **Top nouns**: c, d
       • **Top adjs**:  e, f
+    Messages per day: `▁█▁█`
     """)
 
 

@@ -4,6 +4,8 @@ import textwrap
 import random
 import json
 
+import sparklines
+
 from discord import Guild, TextChannel, User, Message
 from discord.ext import commands
 
@@ -31,12 +33,14 @@ async def user_stats(con: kdb.QConnection, user: User) -> str:
     result = con("{ .j.j user_stats x }", user.id)
     result = json.loads(result)
     fmt_words = lambda x: ", ".join(x)
+    spark = sparklines.sparklines(result['spark'])[0]
     message = textwrap.dedent(f"""
     Stats for `{user}`:
       • **Word count**: {result['total']}
       • **Top verbs**: {fmt_words(result['verbs'])}
       • **Top nouns**: {fmt_words(result['nouns'])}
       • **Top adjs**:  {fmt_words(result['adjs'])}
+    Messages per day: `{spark}`
     """)
     return message
 
