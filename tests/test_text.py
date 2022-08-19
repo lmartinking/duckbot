@@ -11,6 +11,10 @@ def test_tokens():
     toks = tokens("This is a bot")
     assert len(toks) == 4
 
+def test_tokens_with_contractions():
+    toks = tokens("That's said he's good")
+    assert len(toks) == 6
+
 def test_plain():
     assert ["This", "is", "a", "bot"] == plain(tokens("This is a bot"))
 
