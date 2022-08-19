@@ -35,7 +35,19 @@ class DuckBot(commands.Bot):
 
         await stats.process_reaction(guild, channel, reaction)
 
+    async def on_direct_message(self, message: discord.Message):
+        user = message.author
+        if user == self.user:
+            return
+
+        log.info(f"DM: Message author:`{user}` text:`{message.content}`")
+        await cmd.process_message(None, message.channel, user, message, bot=self)
+
     async def on_message(self, message: discord.Message):
+        if not hasattr(message.channel, 'guild'):
+            await self.on_direct_message(message)
+            return
+
         guild: discord.Guild = message.channel.guild
         channel: discord.TextChannel = message.channel
         user: discord.User = message.author

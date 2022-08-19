@@ -8,7 +8,8 @@ from discord import Guild, TextChannel, User, Message
 from discord.ext import commands
 
 from . import kdb
-from . config import FORTUNE_PATH
+from . config import FORTUNE_PATH, CAPYCOIN_HOST
+from . capycoin import action_signup, action_funds, action_send
 
 
 log = logging.getLogger('cmd')
@@ -149,12 +150,55 @@ async def help_command(ctx: commands.Context):
      • `stats @user` - report on chat stats for a particular user
      • `stats #channel` - report on chat stats for a particular channel
      • `stats server` - report on chat stats for the current server
+     • `fortune` - show a random fortune!
     """)
+    if CAPYCOIN_HOST:
+        message += textwrap.dedent("""
+         • `coin signup` - create a new CapyCoin account
+         • `coin send @user <amount>` - send <amount> coin to a particular user
+         • `coin funds` - find out how many coin you have!
+        """)
     await channel.send(message)
 
 
 async def unhandled_command(ctx: commands.Context):
     log.info("Unhandled command: {ctx.command} args: {ctx.command.args}")
+
+
+async def capycoin_command(ctx: commands.Context):
+    log.info(f"CapyCoin command: {ctx}")
+
+    channel: TextChannel = ctx.channel
+
+    if not ctx.args:
+        await channel.send(f"The `coin` command has the following actions: `signup`, `send`, `funds`")
+        return
+
+    action = ctx.args[0]
+
+    message: Message = ctx.message
+    action_user = message.author
+
+    if action == 'signup':
+        message = await action_signup(action_user)
+        await channel.send(message)
+
+    if action == 'send':
+        if len(ctx.args) != 3:
+            await channel.send("The `send` action needs a @user and an `amount`.")
+            return
+
+        obj = parse_obj(ctx.bot, ctx.args[1])
+
+        log.info(f"CapyCoin Send target: {obj}")
+        if isinstance(obj, User):
+            amount = ctx.args[2]
+            message = await action_send(action_user, obj, amount)
+            await channel.send(message)
+
+    if action == 'funds':
+        message = await action_funds(action_user)
+        await channel.send(message)
 
 
 async def process_message(guild: Guild, channel: TextChannel, user: User, message: Message, bot: commands.Bot):
@@ -174,6 +218,8 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
         'ping':  ping_command,
         'sup':   sup_command,
         'fortune': fortune_command,
+        'coin': capycoin_command,
     }
+
     cmd = cmd_map.get(cmd, unhandled_command)
     await cmd(ctx)

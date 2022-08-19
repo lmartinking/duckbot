@@ -2,6 +2,7 @@ from typing import List
 
 import spacy
 import spacy.tokens.token
+import contractions
 
 from .config import LANGUAGE_MODEL
 
@@ -13,6 +14,7 @@ nlp: spacy.Language = spacy.load(LANGUAGE_MODEL)
 
 
 def tokens(text: str) -> TokenList:
+    text = contractions.fix(text, slang=False)
     doc = nlp(text)
     toks = list(doc)
     return toks

@@ -10,3 +10,6 @@ KDB_USER = os.environ.get("KDB_USER")
 KDB_PASS = os.environ.get("KDB_PASS")
 
 FORTUNE_PATH = os.environ.get("FORTUNE_PATH", "/usr/games/fortune")
+
+CAPYCOIN_HOST = os.environ.get("CAPYCOIN_HOST")
+CAPYCOIN_USERS_DB_PATH = os.environ.get("CAPYCOIN_USERS_DB_PATH", "users.db3")
