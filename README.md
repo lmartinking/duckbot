@@ -5,6 +5,7 @@
  * Stats per user (message counts; word counts including _nouns, verbs and adjectives_) 
  * Stats per channel (message counts; chatty users)
  * Stats per server (message counts; chatty users)
+ * [CapyCoin](https://github.com/lmartinking/capycoin) integration (optional!)
 
 ## Screenshots
 
@@ -66,6 +67,10 @@ will source `.env` as part of their startup.
 
  * `FORTUNE_PATH`: Path to `fortune` binary. Defaults to `/usr/games/fortune`.
 
+ * `CAPYCOIN_HOST`: URL to a CapyCoin gateway. See: https://github.com/lmartinking/capycoin
+ * `CAPYCOIN_USERS_DB_PATH`: Path for SQLite database file used for Discord User
+   to CapyCoin account ID mapping
+
 ## Quickstart
 
  1. Set up discord application (per above). Invite bot to server(s).
@@ -81,6 +86,14 @@ will source `.env` as part of their startup.
  * `@duckbot stats server` - print stats for the whole server
  * `@duckbot fortune` - send a fortune to the current channel
  * `@duckbot ping` - the bot will respond "pong" to the user
+
+## CapyCoin Commands
+
+These commands are only enabled when `CAPYCOIN_HOST` is set.
+
+ * `@duckbot coin signup` - sign up for a CapyCoin account
+ * `@duckbot coin send @user {amount}` - send coin to a user
+ * `@duckbot coin funds` - show your account funds
 
 ## Licence
 
