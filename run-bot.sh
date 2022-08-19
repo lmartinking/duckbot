@@ -9,4 +9,6 @@ fi
 source .venv/bin/activate
 source .env
 
+[[ ! -z "$CAPYCOIN_HOST" ]] && python -m duckbot.capycoin  # Setup tables
+
 python -m duckbot.bot
