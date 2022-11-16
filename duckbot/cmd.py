@@ -1,3 +1,5 @@
+from typing import List
+
 import asyncio
 import logging
 import textwrap
@@ -61,7 +63,7 @@ async def channel_stats(con: kdb.QConnection, channel: TextChannel) -> str:
     return message
 
 
-async def server_stats(con: kdb.QConnection, channel: TextChannel) -> str:
+async def server_stats(con: kdb.QConnection, channel: TextChannel) -> List[str]:
     guild: Guild = channel.guild
     log.info(f"Stats for guild: {guild}")
     result = con("{ .j.j guild_stats x }", guild.id)
@@ -76,24 +78,27 @@ async def server_stats(con: kdb.QConnection, channel: TextChannel) -> str:
     user_words_rows = ["`#%-2d %6d %s`" % (idx+1, row["wordcounts"], row["name"]) for idx, row in enumerate(result['user_word_counts'])]
     user_words_rows = "\n".join(user_words_rows)
 
-    message = textwrap.dedent(f"""
-    Stats for server `{guild}`:
-      • **Total channels**: {result['total_channels']}
-      • **Total messages**: {result['total_messages']}
-      • **Active users**: {result['seen_users']}
-    Channel message counts:
-    """) + \
-    chan_rows + \
-    textwrap.dedent(f"""
-    User messages:
-    """) + \
-    user_rows + \
-    textwrap.dedent(f"""
-    User words:
-    """) + \
-    user_words_rows
+    messages = [
+        textwrap.dedent(f"""
+        Stats for server `{guild}`:
+          • **Total channels**: {result['total_channels']}
+          • **Total messages**: {result['total_messages']}
+          • **Active users**: {result['seen_users']}"""),
 
-    return message
+        textwrap.dedent(f"""
+        Channel message counts:
+        """) + chan_rows,
+
+        textwrap.dedent(f"""
+        User messages:
+        """) + user_rows,
+
+        textwrap.dedent(f"""
+        User words:
+        """) + user_words_rows,
+    ]
+
+    return messages
 
 
 async def stats_command(ctx: commands.Context):
@@ -119,8 +124,9 @@ async def stats_command(ctx: commands.Context):
         await channel.send(message)
 
     if obj == "server":
-        message = await server_stats(con, channel)
-        await channel.send(message)
+        messages = await server_stats(con, channel)
+        for m in messages:
+            await channel.send(m)
 
 
 async def ping_command(ctx: commands.Context):
