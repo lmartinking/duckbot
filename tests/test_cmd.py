@@ -162,7 +162,7 @@ async def test_stats_command_server(server_stats, make_connection_from_config, p
     ctx.channel = AsyncMock(name='Channel')
 
     response_message = Mock('response_message')
-    server_stats.return_value = response_message
+    server_stats.return_value = [response_message]
 
     con = Mock(name='Connection')
     make_connection_from_config.return_value = con
@@ -258,19 +258,25 @@ async def test_server_stats():
     con = Mock(name='Connection')
     con.return_value = json.dumps(result)
 
-    msg = await cmd.server_stats(con, chan)
+    msgs = await cmd.server_stats(con, chan)
 
-    assert msg == textwrap.dedent("""
+    assert msgs[0] == textwrap.dedent("""
     Stats for server `<Guild>`:
       • **Total channels**: 4
       • **Total messages**: 10
-      • **Active users**: 2
+      • **Active users**: 2""")
+
+    assert msgs[1] == textwrap.dedent("""
     Channel message counts:
     `#1      10 channel1`
-    `#2       5 channel2`
+    `#2       5 channel2`""")
+
+    assert msgs[2] == textwrap.dedent("""
     User messages:
     `#1     100 user1`
-    `#2      50 user2`
+    `#2      50 user2`""")
+
+    assert msgs[3] == textwrap.dedent("""
     User words:
     `#1    1000 user1`
     `#2     500 user2`""")
