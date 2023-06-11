@@ -35,6 +35,12 @@ Timestamp of the message.
  * KX kdb+ (Personal use licences are available free of charge from
    <https://code.kx.com/q/learn/licensing>)
 
+ 1. Run `python -m venv .venv` to create a virtualenv
+ 2. Run `poetry install`
+ 3. Run `source .venv/bin/activate`
+ 4. Run `python -m spacy download en_core_web_sm`
+
+
 ## Discord Bot Setup
 
 You should follow the steps provided by `discord.py` to set up a
@@ -74,9 +80,10 @@ will source `.env` as part of their startup.
 ## Quickstart
 
  1. Set up discord application (per above). Invite bot to server(s).
- 2. Copy `env.example` to `.env` and edit
- 3. `$ ./run-kdb.sh` (in one terminal)
- 4. `$ ./run-bot.sh` (in another terminal)
+ 2. Follow instructions under [requirements](#requirements) (in a terminal)
+ 3. Copy `env.example` to `.env` and edit
+ 4. `$ ./run-kdb.sh` (in one terminal)
+ 5. `$ ./run-bot.sh` (in another terminal)
 
 ## Commands
 
