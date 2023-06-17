@@ -14,6 +14,7 @@ class DuckBot(commands.Bot):
         intents = discord.Intents.default()
         intents.members = True
         intents.messages = True
+        intents.message_content = True
 
         super().__init__(command_prefix='?', description='Duckbot!', intents=intents)
 
