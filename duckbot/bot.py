@@ -43,13 +43,20 @@ class DuckBot(commands.Bot):
         log.info(f"DM: Message author:`{user}` text:`{message.content}`")
         await cmd.process_message(None, message.channel, user, message, bot=self)
 
+    def get_channel(self, channel_or_thread) -> discord.TextChannel:
+        if hasattr(channel_or_thread, 'parent'):
+            channel: discord.TextChannel = channel_or_thread.parent
+        else:
+            channel: discord.TextChannel = channel_or_thread
+        return channel
+
     async def on_message(self, message: discord.Message):
         if not hasattr(message.channel, 'guild'):
             await self.on_direct_message(message)
             return
 
         guild: discord.Guild = message.channel.guild
-        channel: discord.TextChannel = message.channel
+        channel: discord.TextChannel = self.get_channel(message.channel)
         user: discord.User = message.author
 
         # Ignore our own messages
