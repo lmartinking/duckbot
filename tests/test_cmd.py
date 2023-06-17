@@ -57,7 +57,8 @@ async def test_process_message_dispatch():
         ctx = cmd.commands.Context(
             bot=bot,
             command="fortune", args=["some", "more", "words"],
-            message=message, prefix=bot.user.mention)
+            message=message, prefix=bot.user.mention,
+            view=cmd.commands_view.StringView(''))
 
         cmd.fortune_command.call_args == call(ctx)
 
