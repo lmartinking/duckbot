@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import discord
 from discord.ext import commands
@@ -30,7 +31,7 @@ class DuckBot(commands.Bot):
         guild: discord.Guild = message.channel.guild
         channel: discord.TextChannel = message.channel
         user: discord.User = message.author
-        users: discord.User = await reaction.users().flatten()
+        users: List[discord.User] = [user async for user in reaction.users()]
 
         log.info(f"In: server:`{guild}` id:{guild.id}  Channel: name:`{channel}` id:{channel.id}  Reaction `{reaction}` by `{[u.name for u in users]}` to Message author:`{user}` text:`{message.content}`")
 
