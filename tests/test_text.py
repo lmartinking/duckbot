@@ -3,7 +3,7 @@ from unittest import SkipTest
 from duckbot.text import tokens, plain, verbs, nouns, adjs, LANGUAGE_MODEL
 
 
-if LANGUAGE_MODEL != "en_core_web_sm":
+if LANGUAGE_MODEL != "en_core_web_md":
     raise SkipTest("These tests assume a particular language model")
 
 

@@ -38,7 +38,7 @@ Timestamp of the message.
  1. Run `python -m venv .venv` to create a virtualenv
  2. Run `poetry install`
  3. Run `source .venv/bin/activate`
- 4. Run `python -m spacy download en_core_web_sm`
+ 4. Run `python -m spacy download en_core_web_md`
 
 
 ## Discord Bot Setup
@@ -61,7 +61,7 @@ will source `.env` as part of their startup.
 
  * `DUCKBOT_TOKEN`: Discord bot token.
  * `DUCKBOT_LANG_MODEL`: If you wish to use a different spacy language model,
-   you can set this. Defaults to `en_core_web_sm`. This model is fairly simple
+   you can set this. Defaults to `en_core_web_md`. This model is fairly simple
    but it is also compact in terms of memory/disk usage.
 
  * `KDB_HOST`: kdb+ server host (defaults to `localhost`)
