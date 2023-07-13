@@ -10,6 +10,7 @@ import sparklines
 
 from discord import Guild, TextChannel, User, Message
 from discord.ext import commands
+from discord.ext.commands import view as commands_view
 
 from . import kdb
 from . config import FORTUNE_PATH, CAPYCOIN_HOST
@@ -221,7 +222,7 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
 
     log.info("Command: %s Args: %s", cmd, args)
 
-    ctx = commands.Context(bot=bot, command=cmd, args=args, message=message, prefix=bot.user.mention)
+    ctx = commands.Context(bot=bot, command=cmd, args=args, message=message, prefix=bot.user.mention, view=commands_view.StringView(''))
     cmd_map = {
         'help':  help_command,
         'stats': stats_command,

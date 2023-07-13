@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import discord
 from discord.ext import commands
@@ -14,6 +15,7 @@ class DuckBot(commands.Bot):
         intents = discord.Intents.default()
         intents.members = True
         intents.messages = True
+        intents.message_content = True
 
         super().__init__(command_prefix='?', description='Duckbot!', intents=intents)
 
@@ -29,7 +31,7 @@ class DuckBot(commands.Bot):
         guild: discord.Guild = message.channel.guild
         channel: discord.TextChannel = message.channel
         user: discord.User = message.author
-        users: discord.User = await reaction.users().flatten()
+        users: List[discord.User] = [user async for user in reaction.users()]
 
         log.info(f"In: server:`{guild}` id:{guild.id}  Channel: name:`{channel}` id:{channel.id}  Reaction `{reaction}` by `{[u.name for u in users]}` to Message author:`{user}` text:`{message.content}`")
 
@@ -43,13 +45,20 @@ class DuckBot(commands.Bot):
         log.info(f"DM: Message author:`{user}` text:`{message.content}`")
         await cmd.process_message(None, message.channel, user, message, bot=self)
 
+    def get_channel(self, channel_or_thread) -> discord.TextChannel:
+        if hasattr(channel_or_thread, 'parent'):
+            channel: discord.TextChannel = channel_or_thread.parent
+        else:
+            channel: discord.TextChannel = channel_or_thread
+        return channel
+
     async def on_message(self, message: discord.Message):
         if not hasattr(message.channel, 'guild'):
             await self.on_direct_message(message)
             return
 
         guild: discord.Guild = message.channel.guild
-        channel: discord.TextChannel = message.channel
+        channel: discord.TextChannel = self.get_channel(message.channel)
         user: discord.User = message.author
 
         # Ignore our own messages

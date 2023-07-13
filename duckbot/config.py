@@ -2,7 +2,7 @@ import os
 
 TOKEN = os.environ.get("DUCKBOT_TOKEN", "")
 
-LANGUAGE_MODEL = os.environ.get("DUCKBOT_LANG_MODEL", "en_core_web_sm")
+LANGUAGE_MODEL = os.environ.get("DUCKBOT_LANG_MODEL", "en_core_web_md")
 
 KDB_HOST = os.environ.get("KDB_HOST", "localhost")
 KDB_PORT = int(os.environ.get("KDB_PORT", 5000))
