@@ -5,7 +5,7 @@ from unittest.mock import Mock, MagicMock, AsyncMock, patch, call, ANY
 
 import pytest
 
-from duckbot import cmd
+from duckbot import cmd, weather
 
 
 def make_command_mocks():
@@ -91,10 +91,9 @@ async def test_ping_command():
 @pytest.mark.asyncio
 @patch('duckbot.weather.latest_mars_weather')
 async def test_weather_command_mars(latest_mars_weather):
-    from duckbot.weather import WeatherReport
     ctx = Mock(name='ctx', channel=AsyncMock())
     ctx.args = ['mars']
-    latest_mars_weather.return_value = WeatherReport(earth_date='2000-01-01', sol=123, min_temp=-100.0, max_temp=-10.0, atmosphere='Sunny', uv_index='Low')
+    latest_mars_weather.return_value = weather.WeatherReport(earth_date='2000-01-01', sol=123, min_temp=-100.0, max_temp=-10.0, atmosphere='Sunny', uv_index='Low')
     await cmd.weather_command(ctx)
     ctx.channel.send.assert_called_once_with('🪐 Mars weather on `2023-08-21`. Min: `-79.0` Max: `-21.0` Atmosphere: `Sunny` UV: `Moderate`')
 
