@@ -2,6 +2,7 @@ from typing import List, Dict
 
 import aiohttp
 from dataclasses import dataclass
+from datetime import date
 from async_lru import alru_cache
 
 # This weather report is delayed but has more interesting information
@@ -52,6 +53,11 @@ def convert_feed_item(v: Dict) -> WeatherReport:
     )
 
 
+def parse_earth_date(v: str) -> date:
+    parts = [int(x) for x in v.split("-")]
+    return date(year=parts[0], month=parts[1], day=parts[2])
+
+
 @alru_cache(ttl=21600.0)
 async def latest_mars_weather() -> WeatherReport:
     d1 = await get_mars_weather(URL_PERSERVERENCE)
@@ -59,6 +65,6 @@ async def latest_mars_weather() -> WeatherReport:
     w1 = convert_feed_item(d1[0])
     w2 = convert_feed_item(d2[0])
     # Pick the latest report, with a preference towards Curiosity
-    if w2.sol >= w1.sol:
+    if parse_earth_date(w2.earth_date) >= parse_earth_date(w1.earth_date):
         return w2
     return w1
