@@ -15,6 +15,7 @@ def make_command_mocks():
         ping_command=AsyncMock(),
         sup_command=AsyncMock(),
         fortune_command=AsyncMock(),
+        weather_command=AsyncMock(),
         unhandled_command=AsyncMock()
     )
 
@@ -34,6 +35,7 @@ async def test_process_message_unhandled():
         assert cmd.ping_command.call_count == 0
         assert cmd.sup_command.call_count == 0
         assert cmd.fortune_command.call_count == 0
+        assert cmd.weather_command.call_count == 0
 
         assert cmd.unhandled_command.call_count == 1
 
@@ -74,7 +76,7 @@ async def test_help_command():
 async def test_sup_command():
     ctx = Mock(name='ctx', channel=AsyncMock())
     ctx.message.author.mention = '<@1234>'
-    await cmd.help_command(ctx)
+    await cmd.sup_command(ctx)
     ctx.channel.send.call_args[0][0].startswith("<@1234> ")
 
 
@@ -84,6 +86,25 @@ async def test_ping_command():
     ctx.message.author.mention = '<@1234>'
     await cmd.ping_command(ctx)
     ctx.channel.send.assert_called_once_with('<@1234> pong!')
+
+
+@pytest.mark.asyncio
+@patch('duckbot.weather.latest_mars_weather')
+async def test_weather_command_mars(latest_mars_weather):
+    from duckbot.weather import WeatherReport
+    ctx = Mock(name='ctx', channel=AsyncMock())
+    ctx.args = ['mars']
+    latest_mars_weather.return_value = WeatherReport(earth_date='2000-01-01', sol=123, min_temp=-100.0, max_temp=-10.0, atmosphere='Sunny', uv_index='Low')
+    await cmd.weather_command(ctx)
+    ctx.channel.send.assert_called_once_with('🪐 Mars weather on `2023-08-21`. Min: `-79.0` Max: `-21.0` Atmosphere: `Sunny` UV: `Moderate`')
+
+
+@pytest.mark.asyncio
+async def test_weather_command_no_args():
+    ctx = Mock(name='ctx', channel=AsyncMock())
+    ctx.args = []
+    await cmd.weather_command(ctx)
+    ctx.channel.send.assert_called_once_with('The `weather` command only takes 1 parameter: `mars`')
 
 
 def test_parse_obj_channel():
