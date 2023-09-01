@@ -13,6 +13,7 @@ numpy = "1.23.5"
 requests = "^2.28.1"
 contractions = "^0.1.72"
 sparklines = "^0.4.2"
+async-lru = "^2.0.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"

@@ -15,6 +15,7 @@ from discord.ext.commands import view as commands_view
 from . import kdb
 from . config import FORTUNE_PATH, CAPYCOIN_HOST
 from . capycoin import action_signup, action_funds, action_send
+from . weather import latest_mars_weather
 
 
 log = logging.getLogger('cmd')
@@ -154,6 +155,23 @@ async def fortune_command(ctx: commands.Context):
     await channel.send("\n".join(reply))
 
 
+async def weather_command(ctx: commands.Context):
+    channel: TextChannel = ctx.channel
+
+    if len(ctx.args) != 1:
+        await channel.send(f"The `weather` command only takes 1 parameter: `mars`")
+        return
+
+    obj = ctx.args[0]
+
+    if obj == 'mars':
+        w = await latest_mars_weather()
+        msg = f"🪐 Mars weather on `{w.earth_date}`. Min: `{w.min_temp}` Max: `{w.max_temp}` Atmosphere: `{w.atmosphere}` UV: `{w.uv_index}`"
+        await channel.send(msg)
+    else:
+        await channel.send(f"The `weather` command only supports Mars weather at the moment")
+
+
 async def help_command(ctx: commands.Context):
     channel: TextChannel = ctx.channel
     message = textwrap.dedent("""
@@ -229,7 +247,8 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
         'ping':  ping_command,
         'sup':   sup_command,
         'fortune': fortune_command,
-        'coin': capycoin_command,
+        'coin':    capycoin_command,
+        'weather': weather_command,
     }
 
     cmd = cmd_map.get(cmd, unhandled_command)
