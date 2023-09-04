@@ -58,12 +58,24 @@ def parse_earth_date(v: str) -> date:
     return date(year=parts[0], month=parts[1], day=parts[2])
 
 
+def has_temp_data(v: WeatherReport):
+    return v.min_temp is not None and v.max_temp is not None
+
+
 @alru_cache(ttl=21600.0)
 async def latest_mars_weather() -> WeatherReport:
     d1 = await get_mars_weather(URL_PERSERVERENCE)
     d2 = await get_mars_weather(URL_CURIOSITY)
-    w1 = convert_feed_item(d1[0])
-    w2 = convert_feed_item(d2[0])
+
+    d1 = [convert_feed_item(x) for x in d1]
+    d1 = [x for x in d1 if has_temp_data(x)]
+
+    d2 = [convert_feed_item(x) for x in d2]
+    d2 = [x for x in d2 if has_temp_data(x)]
+
+    w1 = d1[0]
+    w2 = d2[0]
+
     # Pick the latest report, with a preference towards Curiosity
     if parse_earth_date(w2.earth_date) >= parse_earth_date(w1.earth_date):
         return w2
