@@ -25,6 +25,7 @@ async def test_latest_mars_weather_prefers_curiosity():
     ]
 
     with patch('duckbot.weather.get_mars_weather', side_effect=[perserverence_reports, curiosity_reports]):
+        weather.latest_mars_weather.cache_clear()
         w = await weather.latest_mars_weather()
 
     assert w.earth_date == '2000-01-01'
@@ -59,7 +60,8 @@ async def test_latest_mars_weather_filters_empty_data():
     ]
 
     with patch('duckbot.weather.get_mars_weather', side_effect=[perserverence_reports, curiosity_reports]):
+        weather.latest_mars_weather.cache_clear()
         w = await weather.latest_mars_weather()
 
-    assert w.earth_date == '2000-01-02'
     assert w.sol == 1
+    assert w.earth_date == '2000-01-02'
