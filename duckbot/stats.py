@@ -38,6 +38,9 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
         if word_list:
             con.sendAsync("adduserwords", user.id, word_type, word_list)
 
+            # For collecting overall word stats per channel
+            con.sendAsync("adduserwords", channel.id, word_type, word_list)
+
     if not message.edited_at:
         con.sendAsync("addmessage", message.id, channel.id, user.id, message.created_at.isoformat())
 

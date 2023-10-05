@@ -9,6 +9,7 @@ guilds: `guildid xkey guilds
 channels: ([] channelid:`long$(); `$name:(); `long$guildid:() )
 channels: `channelid xkey channels
 
+// NOTE: This table stores user words and channel words
 userwords: ([] userid:`long$(); `$wordclass:(); words:(); wordcounts:() )
 userwords: `userid`wordclass xkey userwords
 

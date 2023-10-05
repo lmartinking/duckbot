@@ -23,13 +23,20 @@ async def test_process_message():
 
     make_connection_from_config.assert_called_once()
 
-    assert con.sendAsync.call_count == 7
-    con.sendAsync.call_args_list[0] == ("adduser", user.id, f"{user}")
-    con.sendAsync.call_args_list[1] == ("addguild", guild.id, guild.name)
-    con.sendAsync.call_args_list[2] == ("addchannel", channel.id, channel.name, guild.id)
-    con.sendAsync.call_args_list[3] == ("adduserwords", "all", ["a", "big", "test", "message"])
-    con.sendAsync.call_args_list[4] == ("adduserwords", "noun", ["test", "message"])
-    con.sendAsync.call_args_list[5] == ("adduserwords", "adj", ["big"])
-    con.sendAsync.call_args_list[6] == ("addmessage", message.id, channel.id, user.id, message.created_at.isoformat())
+    assert con.sendAsync.call_count == 10
+    assert con.sendAsync.call_args_list[0].args == ("adduser", user.id, f"{user}")
+    assert con.sendAsync.call_args_list[1].args == ("addguild", guild.id, guild.name)
+    assert con.sendAsync.call_args_list[2].args == ("addchannel", channel.id, channel.name, guild.id)
+
+    assert con.sendAsync.call_args_list[3].args == ("adduserwords", user.id, "all", ["a", "big", "test", "message"])
+    assert con.sendAsync.call_args_list[4].args == ("adduserwords", channel.id, "all", ["a", "big", "test", "message"])
+
+    assert con.sendAsync.call_args_list[5].args == ("adduserwords", user.id, "noun", ["test", "message"])
+    assert con.sendAsync.call_args_list[6].args == ("adduserwords", channel.id, "noun", ["test", "message"])
+
+    assert con.sendAsync.call_args_list[7].args == ("adduserwords", user.id, "adj", ["big"])
+    assert con.sendAsync.call_args_list[8].args == ("adduserwords", channel.id, "adj", ["big"])
+
+    assert con.sendAsync.call_args_list[9].args == ("addmessage", message.id, channel.id, user.id, message.created_at.isoformat())
 
     con.close.assert_called_once()
