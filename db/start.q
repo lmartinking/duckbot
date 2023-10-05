@@ -152,7 +152,12 @@ channel_stats: {[chid]
     top_users: (10 sublist `messageid xdesc select count messageid by userid from messages where channelid = chid) lj (users);
     top_users: select messageid, name from top_users;
 
-    (`total`topusers)!(total_messages; top_users)
+    top_words: top_words_of_user chid;
+    top_verbs: first exec words from top_words where wordclass = `verb;
+    top_nouns: first exec words from top_words where wordclass = `noun;
+    top_adjs:  first exec words from top_words where wordclass = `adj;
+
+    (`total`topusers`verbs`nouns`adjs)!(total_messages; top_users; top_verbs; top_nouns; top_adjs)
  }
 
 guild_stats: {[gid]
