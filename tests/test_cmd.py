@@ -232,6 +232,9 @@ async def test_channel_stats():
 
     result = {
         'total': 4,
+        'verbs': ['a', 'b'],
+        'nouns': ['c', 'd'],
+        'adjs':  ['e', 'f'],
         'topusers': [
             {'messageid': 10, 'name': 'user1' },
             {'messageid': 5,  'name': 'user2' },
@@ -246,6 +249,9 @@ async def test_channel_stats():
     assert msg == textwrap.dedent("""
     Stats for `<Channel>`:
       • **Message count**: 4
+      • **Top verbs**: a, b
+      • **Top nouns**: c, d
+      • **Top adjs**:  e, f
     Most chatty users:
     `#1      10 user1`
     `#2       5 user2`""")
