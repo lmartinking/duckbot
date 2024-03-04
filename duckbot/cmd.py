@@ -57,9 +57,14 @@ async def channel_stats(con: kdb.QConnection, channel: TextChannel) -> str:
     rows = ["`#%-2d %6d %s`" % (idx+1, row["messageid"], row["name"]) for idx, row in enumerate(result['topusers'])]
     rows = "\n".join(rows)
 
+    fmt_words = lambda x: ", ".join(x)
+
     message = textwrap.dedent(f"""
     Stats for `{channel}`:
       • **Message count**: {result['total']}
+      • **Top verbs**: {fmt_words(result['verbs'])}
+      • **Top nouns**: {fmt_words(result['nouns'])}
+      • **Top adjs**:  {fmt_words(result['adjs'])}
     Most chatty users:
     """) + rows
     return message
