@@ -6,7 +6,7 @@ authors = ["Lucas Martin-King"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-"discord.py" = "^2.3.0"
+"discord.py" = "^2.3.2"
 spacy = "^3.3.1"
 qPython = { git = "https://github.com/atf1206/qPython.git", branch = "fix_string_writer_utf8" }
 numpy = "1.23.5"
