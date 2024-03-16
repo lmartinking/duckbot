@@ -29,7 +29,7 @@ async def test_on_message_normal_message(bot_user, stats, cmd):
     await DuckBot().on_message(message)
 
     assert cmd.call_count == 0
-    assert stats.process_message.called_once_with(message.channel.guild, message.channel, message.author, message)
+    assert await stats.process_message.called_once_with(message.channel.guild, message.channel, message.author, message)
 
 
 @pytest.mark.asyncio
@@ -47,7 +47,7 @@ async def test_on_message_command_message(bot_user, stats, cmd):
     await bot.on_message(message)
 
     assert stats.call_count == 0
-    assert cmd.process_message.called_once_with(message.channel.guild, message.channel, message.author, message, bot=bot)
+    assert await cmd.process_message.called_once_with(message.channel.guild, message.channel, message.author, message, bot=bot)
 
 
 @pytest.mark.asyncio
