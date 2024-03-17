@@ -13,17 +13,20 @@ channels: `channelid xkey channels
 userwords: ([] userid:`long$(); `$wordclass:(); words:(); wordcounts:() )
 userwords: `userid`wordclass xkey userwords
 
-messages: ([] messageid:`long$(); channelid:`long$(); userid:`long$(); timestamp:() )
+messages: ([] messageid:`long$(); channelid:`long$(); userid:`long$(); timestamp:(); wordcount:`int$() )
 
 
 // Load tables from disk (if persisted)
 
 loadtables: {
-    if[`users in key `:. ;    load `users]
-    if[`guilds in key `:.;    load `guilds]
-    if[`channels in key `:.;  load `channels]
-    if[`userwords in key `:.; load `userwords]
-    if[`messages in key `:.;  load `messages]
+    if[`users in key `:. ;    load `users];
+    if[`guilds in key `:.;    load `guilds];
+    if[`channels in key `:.;  load `channels];
+    if[`userwords in key `:.; load `userwords];
+    if[`messages in key `:.;  load `messages];
+
+    // Migration: add wordcount column
+    if[0b = `wordcount in key flip messages; update wordcount:`int$0 from `messages];
  }
 
 savetables: {
@@ -55,7 +58,7 @@ addchannel: {[channelid;name;guildid]
 addmessage: {[messageid;channelid;userid;timestamp]
     // NOTE: No checks on uniqueness as table is NOT keyed
     if[10h=type timestamp; timestamp: "Z"$timestamp];
-    `messages insert (messageid;channelid;userid;timestamp)
+    `messages insert (messageid;channelid;userid;timestamp;0)
  }
 
 
