@@ -37,6 +37,6 @@ async def test_process_message():
     assert con.sendAsync.call_args_list[7].args == ("adduserwords", user.id, "adj", ["big"])
     assert con.sendAsync.call_args_list[8].args == ("adduserwords", channel.id, "adj", ["big"])
 
-    assert con.sendAsync.call_args_list[9].args == ("addmessage", message.id, channel.id, user.id, message.created_at.isoformat())
+    assert con.sendAsync.call_args_list[9].args == ("addmessage", message.id, channel.id, user.id, message.created_at.isoformat(), 4)
 
     con.close.assert_called_once()

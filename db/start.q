@@ -55,10 +55,10 @@ addchannel: {[channelid;name;guildid]
     `channels upsert (channelid;`$name;guildid)
  }
 
-addmessage: {[messageid;channelid;userid;timestamp]
+addmessage: {[messageid;channelid;userid;timestamp;wordcount]
     // NOTE: No checks on uniqueness as table is NOT keyed
     if[10h=type timestamp; timestamp: "Z"$timestamp];
-    `messages insert (messageid;channelid;userid;timestamp;0)
+    `messages insert (messageid;channelid;userid;timestamp;wordcount)
  }
 
 

@@ -42,6 +42,7 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
             con.sendAsync("adduserwords", channel.id, word_type, word_list)
 
     if not message.edited_at:
-        con.sendAsync("addmessage", message.id, channel.id, user.id, message.created_at.isoformat())
+        word_count = len(msg_plain)
+        con.sendAsync("addmessage", message.id, channel.id, user.id, message.created_at.isoformat(), word_count)
 
     con.close()
