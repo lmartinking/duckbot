@@ -114,7 +114,7 @@ top_wordcounts_by_user: {
  }
 
 total_word_count_of_user: {
-    sum first exec wordcounts from userwords where userid = x
+    sum first exec wordcounts from userwords where userid = x, wordclass = `all
  }
 
 top_words_of_user_ex: {[num_to_show; user_id]
