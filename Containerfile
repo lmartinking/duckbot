@@ -31,3 +31,6 @@ COPY --from=fortunes /lib/x86_64-linux-gnu/librecode.so.0 /lib/x86_64-linux-gnu/
 COPY --from=build /app /app
 
 CMD ["/app/.venv/bin/python", "-m", "duckbot.bot"]
+
+LABEL org.opencontainers.image.source=https://github.com/lmartinking/duckbot
+LABEL org.opencontainers.image.authors="Lucas Martin-King"
