@@ -3,7 +3,7 @@ name: Build Container
 on: [push]
 
 jobs:
-  tests:
+  build_container:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
