@@ -18,6 +18,6 @@ jobs:
       - name: 'Build Inventory Image'
         run: |
           TAG="ghcr.io/lmartinking/duckbot:${{github.sha}}"
-          docker build . --tag ${TAG}
+          docker build . -f Containerfile --tag ${TAG}
           docker push ${TAG}
 
