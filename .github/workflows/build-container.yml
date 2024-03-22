@@ -26,18 +26,21 @@ jobs:
       - name: 'Build Image'
         run: |
           docker build . -f Containerfile -t duckbot
-          docker tag duckbot --tag "${IMG_REF}"
+
+      - name: 'Tag Image'
+        run: |
+          docker tag duckbot --tag "${{ env.IMG_REF }}"
+
+      - name: 'Push Image'
+        run: |
+          docker push "${{ env.IMG_REF }}"
 
       - name: 'Tag Stable Image'
         if: github.ref == 'refs/heads/master'
         run: |
-          docker tag duckbot "${IMG_STABLE_REF}"
+          docker tag duckbot "${{ env.IMG_STABLE_REF }}"
 
       - name: 'Push Stable Image'
         if: github.ref == 'refs/heads/master'
         run: |
-          docker push "${IMG_STABLE_REF}"
-
-      - name: 'Push Image'
-        run: |
-          docker push "${IMG_REF}"
+          docker push "${{ env.IMG_STABLE_REF }}"
