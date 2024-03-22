@@ -2,12 +2,17 @@ name: Build Container
 
 on: [push]
 
+env:
+  IMG_REF:  "ghcr.io/lmartinking/duckbot:${{github.sha}}"
+  IMG_STABLE_REF: "ghcr.io/lmartinking/duckbot:latest"
+
 jobs:
   build_container:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+
     steps:
       - uses: actions/checkout@v3
 
@@ -18,9 +23,21 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: 'Build Inventory Image'
+      - name: 'Build Image'
         run: |
-          TAG="ghcr.io/lmartinking/duckbot:${{github.sha}}"
-          docker build . -f Containerfile --tag ${TAG}
-          docker push ${TAG}
+          docker build . -f Containerfile -t duckbot
+          docker tag duckbot --tag "${IMG_REF}"
 
+      - name: 'Tag Stable Image'
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker tag duckbot "${IMG_STABLE_REF}"
+
+      - name: 'Push Stable Image'
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker push "${IMG_STABLE_REF}"
+
+      - name: 'Push Image'
+        run: |
+          docker push "${IMG_REF}"
