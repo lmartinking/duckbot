@@ -88,6 +88,7 @@ spec:
         # See: https://github.com/lmartinking/kdb-container
         image: 'ghcr.io/lmartinking/kdb-container:latest'
         imagePullPolicy: Never  # Because this is a private image
+        args: ["q", "/data", "-p", "5000"]
         ports:
         - containerPort: 5000
         env:
@@ -98,4 +99,11 @@ spec:
             secretKeyRef:
               name: kdb-licence
               key: b64
+        volumeMounts:
+          - name: duckbot-kdb-data
+            path: /data
+      volumes:
+        - name: duckbot-kdb-data
+          persistentVolumeClaim:
+            claimName: duckbot-kdb-pv-claim
 ---
