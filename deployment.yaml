@@ -47,6 +47,7 @@ metadata:
     app: duckbot-kdb
 spec:
   storageClassName: manual
+  persistentVolumeReclaimPolicy: Retain
   capacity:
     storage: 1Gi
   accessModes:
