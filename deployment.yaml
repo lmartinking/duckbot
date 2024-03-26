@@ -23,6 +23,21 @@ spec:
               name: duckbot-token
               key: discord-token
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: duckbot-kdb-service
+  labels:
+    app: duckbot-kdb
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: kdb-port
+  selector:
+    app: duckbot-kdb
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -41,4 +56,6 @@ spec:
       containers:
       - name: duckbot-kdb-container
         image: 'kdb:latest'
+        ports:
+        - containerPort: 5000
 ---
