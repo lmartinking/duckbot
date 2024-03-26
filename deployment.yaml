@@ -59,7 +59,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: duckbot-kdb-pv-claim
 spec:
-  app: duckbot-app
+  volumeName: duckbot-kdb-pv-volume
   accessModes:
     - ReadWriteOnce
 ---
