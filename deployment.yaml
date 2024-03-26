@@ -60,6 +60,9 @@ metadata:
   name: duckbot-kdb-pv-claim
 spec:
   volumeName: duckbot-kdb-pv-volume
+  resources:
+    requests:
+      storage: 1Gi
   accessModes:
     - ReadWriteOnce
 ---
