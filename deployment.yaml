@@ -60,4 +60,10 @@ spec:
         image: 'ghcr.io/lmartinking/kdb-container:latest'
         ports:
         - containerPort: 5000
+        env:
+        - name: KDB_LICENSE_B64
+          valueFrom:
+            secretKeyRef:
+              name: kdb-licence
+              key: b64
 ---
