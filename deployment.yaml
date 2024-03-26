@@ -38,6 +38,31 @@ spec:
   selector:
     app: duckbot-kdb
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: duckbot-kdb-pv-volume
+  labels:
+    type: local
+    app: duckbot-kdb
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/srv/duckbot"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: duckbot-kdb-pv-claim
+spec:
+  app: duckbot-app
+  accessModes:
+    - ReadWriteOnce
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -62,6 +87,8 @@ spec:
         ports:
         - containerPort: 5000
         env:
+        # A personal use licence will need to be requested from kx. This will
+        # need to be base64 encoded. Use that to populate the secret.
         - name: KDB_LICENSE_B64
           valueFrom:
             secretKeyRef:
