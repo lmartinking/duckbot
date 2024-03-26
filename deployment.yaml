@@ -58,6 +58,7 @@ spec:
         # NOTE: This is not a public image. It needs to be imported.
         # See: https://github.com/lmartinking/kdb-container
         image: 'ghcr.io/lmartinking/kdb-container:latest'
+        imagePullPolicy: Never  # Because this is a private image
         ports:
         - containerPort: 5000
         env:
