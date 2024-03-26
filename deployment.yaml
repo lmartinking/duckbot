@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: duckbot-statefulset
+spec:
+  serviceName: duckbot-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: duckbot-app
+  template:
+    metadata:
+      labels:
+        app: duckbot-app
+    spec:
+      containers:
+      - name: duckbot-container
+        image: 'ghcr.io/lmartinking/duckbot:7b3217c47fe690a40ba5155054d63e7c164261c3'
+---
