@@ -23,3 +23,22 @@ spec:
               name: duckbot-token
               key: discord-token
 ---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: duckbot-kdb-statefulset
+spec:
+  serviceName: duckbot-kdb-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: duckbot-kdb
+  template:
+    metadata:
+      labels:
+        app: duckbot-kdb
+    spec:
+      containers:
+      - name: duckbot-kdb-container
+        image: 'kdb:latest'
+---
