@@ -57,7 +57,7 @@ spec:
       - name: duckbot-kdb-container
         # NOTE: This is not a public image. It needs to be imported.
         # See: https://github.com/lmartinking/kdb-container
-        image: 'localhost/kdb:latest'
+        image: 'ghcr.io/lmartinking/kdb-container:latest'
         ports:
         - containerPort: 5000
 ---
