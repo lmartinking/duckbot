@@ -101,7 +101,7 @@ spec:
               key: b64
         volumeMounts:
           - name: duckbot-kdb-data
-            path: /data
+            mountPath: /data
       volumes:
         - name: duckbot-kdb-data
           persistentVolumeClaim:
