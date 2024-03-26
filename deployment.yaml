@@ -61,6 +61,7 @@ metadata:
   name: duckbot-kdb-pv-claim
 spec:
   volumeName: duckbot-kdb-pv-volume
+  storageClassName: local-path
   resources:
     requests:
       storage: 1Gi
