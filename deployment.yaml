@@ -88,6 +88,7 @@ spec:
         # See: https://github.com/lmartinking/kdb-container
         image: 'ghcr.io/lmartinking/kdb-container:latest'
         imagePullPolicy: Never  # Because this is a private image
+        command: ["/entrypoint.sh"]
         args: ["q", "/data", "-p", "5000"]
         ports:
         - containerPort: 5000
