@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: duckbot-container
-        image: 'ghcr.io/lmartinking/duckbot:7b3217c47fe690a40ba5155054d63e7c164261c3'
+        image: 'ghcr.io/lmartinking/duckbot:latest'
         env:
         - name: KDB_HOST
           value: duckbot-kdb-service
