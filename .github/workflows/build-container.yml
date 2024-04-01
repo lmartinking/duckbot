@@ -1,0 +1,46 @@
+name: Build Container
+
+on: [push]
+
+env:
+  IMG_REF:  "ghcr.io/lmartinking/duckbot:${{github.sha}}"
+  IMG_STABLE_REF: "ghcr.io/lmartinking/duckbot:latest"
+
+jobs:
+  build_container:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: 'Build Image'
+        run: |
+          docker build . -f Containerfile -t duckbot
+
+      - name: 'Tag Image'
+        run: |
+          docker tag duckbot "${{ env.IMG_REF }}"
+
+      - name: 'Push Image'
+        run: |
+          docker push "${{ env.IMG_REF }}"
+
+      - name: 'Tag Stable Image'
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker tag duckbot "${{ env.IMG_STABLE_REF }}"
+
+      - name: 'Push Stable Image'
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker push "${{ env.IMG_STABLE_REF }}"
