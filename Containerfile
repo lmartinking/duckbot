@@ -19,7 +19,7 @@ RUN apt update -y && apt install -y fortune-mod fortunes-min fortunes fortunes-b
 
 # Add Dubya fortunes!
 WORKDIR /tmp
-ADD https://ftp.heanet.ie/mirrors/gentoo.org/distfiles/7d/Dubya-20050118.tar.gz .
+ADD http://mirror.linux.ro/gentoo/distfiles/Dubya-20050118.tar.gz .
 RUN tar xzvf Dubya-*.gz && mv ./dubya/dubya* /usr/share/games/fortunes
 
 FROM python:3.10-slim-bookworm
