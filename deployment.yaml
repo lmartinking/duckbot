@@ -118,8 +118,8 @@ kind: Secret
 type: Opaque
 metadata:
   name: kdb-licence
-data:
-  b64: # You will need to encode the kdb licence file into base64, eg: cat k4.lic | base64
+stringData:
+  b64: # You will need to encode the kdb licence file into base64, eg: cat k4.lic | base64 -w 0
 ---
 apiVersion: v1
 kind: Secret
