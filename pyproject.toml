@@ -10,7 +10,7 @@ python = "^3.10"
 spacy = "^3.3.1"
 qPython = { git = "https://github.com/atf1206/qPython.git", branch = "fix_string_writer_utf8" }
 numpy = "1.23.5"
-requests = "^2.32.2"
+requests = "^2.32.4"
 contractions = "^0.1.72"
 sparklines = "^0.4.2"
 async-lru = "^2.0.4"
