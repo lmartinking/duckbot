@@ -6,32 +6,22 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
-
-      - name: Setup a local virtual environment
-        run: |
-          poetry config virtualenvs.create true --local
-          poetry config virtualenvs.in-project true --local
+        run: uv python install
 
       - uses: actions/cache@v3
         name: Cache the virtual environment based on the dependencies lock file
         with:
           path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
+          key: venv-${{ hashFiles('uv.lock') }}
 
       - name: Install the project dependencies
-        run: poetry install
-
-      - name: Install spacy language model
-        run: poetry run python -m spacy download en_core_web_md
+        run: uv sync --locked
 
       - name: Run tests
-        run: poetry run pytest -v
+        run: uv run pytest -v
