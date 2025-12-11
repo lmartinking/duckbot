@@ -1,25 +1,34 @@
-[tool.poetry]
+[project]
 name = "duckbot"
 version = "0.0.1"
 description = "A discord bot for giggles"
-authors = ["Lucas Martin-King"]
+authors = [{ name = "Lucas Martin-King" }]
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "discord.py>=2.3.2,<3",
+    "spacy>=3.3.1,<4",
+    "en-core-web-md",
+    "qPython",
+    "numpy==1.23.5",
+    "requests>=2.32.4,<3",
+    "contractions>=0.1.72,<0.2",
+    "sparklines>=0.4.2,<0.5",
+    "async-lru>=2.0.4,<3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-"discord.py" = "^2.3.2"
-spacy = "^3.3.1"
+[dependency-groups]
+dev = [
+    "pytest>=7.1.2,<8",
+    "rope>=1.1.1,<2",
+    "pytest-asyncio>=0.18.3,<0.19",
+]
+
+[tool.uv]
+
+[tool.uv.sources]
 qPython = { git = "https://github.com/atf1206/qPython.git", branch = "fix_string_writer_utf8" }
-numpy = "1.23.5"
-requests = "^2.32.4"
-contractions = "^0.1.72"
-sparklines = "^0.4.2"
-async-lru = "^2.0.4"
-
-[tool.poetry.dev-dependencies]
-pytest = "^7.1.2"
-rope = "^1.1.1"
-pytest-asyncio = "^0.18.3"
+en-core-web-md = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.7.1/en_core_web_md-3.7.1-py3-none-any.whl" }
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
