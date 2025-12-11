@@ -13,14 +13,13 @@ dependencies = [
     "sparklines>=0.4.2,<0.5",
     "async-lru>=2.0.4,<3",
     "numpy<2", # Limited by spacy compatability
-    "kola>=2.2.0",
+    "kola>=2.2.0"
 ]
 
 [dependency-groups]
 dev = [
-    "pytest>=7.1.2,<8",
-    "rope>=1.1.1,<2",
-    "pytest-asyncio>=0.18.3,<0.19",
+    "pytest",
+    "pytest-asyncio",
 ]
 
 [tool.uv]

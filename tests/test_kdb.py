@@ -43,3 +43,20 @@ async def test_kdb_async_query(kdb_server):
 
     ret = await kdb.query(con, "1+1")
     assert ret == 2.0
+
+
+def test_kdb_roundtrip(kdb_server):
+    host, port = kdb_server
+    con = kdb.make_connection(host, port)
+
+    con.asyn("z: 123")
+    ret = con.sync("z")
+    assert ret == 123
+
+
+def test_kdb_encode_args(kdb_server):
+    host, port = kdb_server
+    con = kdb.make_connection(host, port)
+
+    ret = con.sync(".j.j", [1, 2, "four"])
+    assert ret == '''[1,2,"four"]'''
