@@ -30,18 +30,19 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
     # FIXME: Inefficient!
     con = make_connection_from_config()
 
-    con.sendAsync("adduser", user.id, f"{user}")
-    con.sendAsync("addguild", guild.id, guild.name)
-    con.sendAsync("addchannel", channel.id, channel.name, guild.id)
+    con.asyn("adduser", user.id, f"{user}")
+    con.asyn("addguild", guild.id, guild.name)
+    con.asyn("addchannel", channel.id, channel.name, guild.id)
 
     for word_type, word_list in (("all", msg_plain), ("verb", msg_verbs), ("noun", msg_nouns), ("adj", msg_adjs)):
         if word_list:
-            con.sendAsync("adduserwords", user.id, word_type, word_list)
+            con.asyn("adduserwords", user.id, word_type, word_list)
 
             # For collecting overall word stats per channel
-            con.sendAsync("adduserwords", channel.id, word_type, word_list)
+            con.asyn("adduserwords", channel.id, word_type, word_list)
 
     if not message.edited_at:
-        con.sendAsync("addmessage", message.id, channel.id, user.id, message.created_at.isoformat())
+        timestamp = message.created_at.isoformat()
+        con.asyn("addmessage", message.id, channel.id, user.id, timestamp)
 
-    con.close()
+    con.disconnect()
