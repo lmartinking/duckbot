@@ -1,3 +1,4 @@
+import socket
 import logging
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
@@ -17,11 +18,15 @@ class QConnection:
         password: str = None,
         timeout: int = 0,
     ):
-        # NOTE: timeout is unused because there seems to be connection issues using it. See: https://github.com/jshinonome/kola/issues/20
+        if timeout:
+            # Due to rust requirements for TCP sockets with timeouts, we need to resolve the hostname to an IP address.
+            # See: https://github.com/jshinonome/kola/issues/20#issuecomment-3646378125
+            host = socket.gethostbyname(host)
+
         if username and password:
-            self.con = Q(host, port, username, password)
+            self.con = Q(host, port, username, password, timeout=timeout)
         else:
-            self.con = Q(host, port)
+            self.con = Q(host, port, timeout=timeout)
 
     def open(self):
         return self.con.connect()
