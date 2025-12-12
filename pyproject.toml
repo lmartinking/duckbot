@@ -30,3 +30,6 @@ en-core-web-md = { url = "https://github.com/explosion/spacy-models/releases/dow
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 200
