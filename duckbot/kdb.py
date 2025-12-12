@@ -17,6 +17,7 @@ class QConnection:
         password: str = None,
         timeout: int = 0,
     ):
+        # NOTE: timeout is unused because there seems to be connection issues using it. See: https://github.com/jshinonome/kola/issues/20
         if username and password:
             self.con = Q(host, port, username, password)
         else:
@@ -29,6 +30,8 @@ class QConnection:
         return self.con.disconnect()
 
     def _encode_arg(self, arg):
+        # NOTE: Strings are converted to bytes, see: https://github.com/jshinonome/kola/tree/main/py-kola#basic-data-type
+        #       Because otherwise they will be treated as a Symbol type
         if isinstance(arg, str):
             return arg.encode("utf-8")
         if isinstance(arg, (list, tuple)):

@@ -75,4 +75,4 @@ async def test_process_message():
         message.created_at.isoformat(),
     )
 
-    con.disconnect.assert_called_once()
+    con.close.assert_called_once()
