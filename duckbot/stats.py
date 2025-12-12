@@ -45,4 +45,4 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
         timestamp = message.created_at.isoformat()
         con.asyn("addmessage", message.id, channel.id, user.id, timestamp)
 
-    con.disconnect()
+    con.close()

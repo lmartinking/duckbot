@@ -22,10 +22,10 @@ class QConnection:
         else:
             self.con = Q(host, port)
 
-    def connect(self):
+    def open(self):
         return self.con.connect()
 
-    def disconnect(self):
+    def close(self):
         return self.con.disconnect()
 
     def _encode_arg(self, arg):
@@ -54,7 +54,7 @@ def make_connection(host: str, port: int, username: str = None, password: str = 
     log.debug(f"kdb connection {host}:{port}")
     con = QConnection(host, port, username=username, password=password, timeout=1)
     if auto_open:
-        con.connect()
+        con.open()
         log.debug(f"opened kdb+ connection")
     return con
 
@@ -77,7 +77,7 @@ def ping(con: QConnection) -> bool:
 
 async def query(con: QConnection, *args):
     def run_query():
-        con.connect()
+        con.open()
         return con.sync(*args)
 
     exec = ThreadPoolExecutor(1)
