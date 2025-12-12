@@ -1,5 +1,7 @@
 import logging
 
+from contextlib import closing
+
 from discord import Guild, TextChannel, User, Message, Reaction
 
 from .kdb import make_connection_from_config
@@ -27,22 +29,18 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
 
     log.info("Message tokens: %s", msg_toks)
 
-    # FIXME: Inefficient!
-    con = make_connection_from_config()
+    with closing(make_connection_from_config()) as con:
+        con.asyn("adduser", user.id, f"{user}")
+        con.asyn("addguild", guild.id, guild.name)
+        con.asyn("addchannel", channel.id, channel.name, guild.id)
 
-    con.asyn("adduser", user.id, f"{user}")
-    con.asyn("addguild", guild.id, guild.name)
-    con.asyn("addchannel", channel.id, channel.name, guild.id)
+        for word_type, word_list in (("all", msg_plain), ("verb", msg_verbs), ("noun", msg_nouns), ("adj", msg_adjs)):
+            if word_list:
+                con.asyn("adduserwords", user.id, word_type, word_list)
 
-    for word_type, word_list in (("all", msg_plain), ("verb", msg_verbs), ("noun", msg_nouns), ("adj", msg_adjs)):
-        if word_list:
-            con.asyn("adduserwords", user.id, word_type, word_list)
+                # For collecting overall word stats per channel
+                con.asyn("adduserwords", channel.id, word_type, word_list)
 
-            # For collecting overall word stats per channel
-            con.asyn("adduserwords", channel.id, word_type, word_list)
-
-    if not message.edited_at:
-        timestamp = message.created_at.isoformat()
-        con.asyn("addmessage", message.id, channel.id, user.id, timestamp)
-
-    con.close()
+        if not message.edited_at:
+            timestamp = message.created_at.isoformat()
+            con.asyn("addmessage", message.id, channel.id, user.id, timestamp)
