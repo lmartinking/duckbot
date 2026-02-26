@@ -18,6 +18,7 @@ from . import kdb
 from . config import FORTUNE_PATH, CAPYCOIN_HOST
 from . capycoin import action_signup, action_funds, action_send
 from . weather import latest_mars_weather
+from . tarot import draw_cards as draw_tarot_cards
 
 
 log = logging.getLogger('cmd')
@@ -186,6 +187,8 @@ async def help_command(ctx: commands.Context):
      • `stats #channel` - report on chat stats for a particular channel
      • `stats server` - report on chat stats for the current server
      • `fortune` - show a random fortune!
+     • `weather` - show the latest Mars weather report
+     • `tarot` - draw some tarot cards
     """)
     if CAPYCOIN_HOST:
         message += textwrap.dedent("""
@@ -236,6 +239,15 @@ async def capycoin_command(ctx: commands.Context):
         await channel.send(message)
 
 
+async def tarot_command(ctx: commands.Context):
+    channel: TextChannel = ctx.channel
+    count = 3
+    cards = draw_tarot_cards(count)
+    for phase, card in zip(("Past", "Present", "Future"), cards):
+        await channel.send(f"**{phase}**: {card.name} - {card.meaning}")
+        await asyncio.sleep(1)  # Add a small delay between card reveals for effect
+
+
 async def process_message(guild: Guild, channel: TextChannel, user: User, message: Message, bot: commands.Bot):
     cmd_toks = [t for t in message.content.split()]
 
@@ -255,6 +267,7 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
         'fortune': fortune_command,
         'coin':    capycoin_command,
         'weather': weather_command,
+        'tarot': tarot_command,
     }
 
     cmd = cmd_map.get(cmd, unhandled_command)
