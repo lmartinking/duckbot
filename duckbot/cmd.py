@@ -6,6 +6,8 @@ import textwrap
 import random
 import json
 
+from contextlib import closing
+
 import sparklines
 
 from discord import Guild, TextChannel, User, Message
@@ -118,22 +120,21 @@ async def stats_command(ctx: commands.Context):
     obj = parse_obj(ctx.bot, ctx.args[0])
     log.info(f"Stats target: {obj}")
 
-    con = kdb.make_connection_from_config()
-
     # TODO: Use Jinja for better formatting
 
-    if isinstance(obj, User):
-        message = await user_stats(con, obj)
-        await channel.send(message)
+    with closing(kdb.make_connection_from_config()) as con:
+        if isinstance(obj, User):
+            message = await user_stats(con, obj)
+            await channel.send(message)
 
-    if isinstance(obj, TextChannel):
-        message = await channel_stats(con, obj)
-        await channel.send(message)
+        if isinstance(obj, TextChannel):
+            message = await channel_stats(con, obj)
+            await channel.send(message)
 
-    if obj == "server":
-        messages = await server_stats(con, channel)
-        for m in messages:
-            await channel.send(m)
+        if obj == "server":
+            messages = await server_stats(con, channel)
+            for m in messages:
+                await channel.send(m)
 
 
 async def ping_command(ctx: commands.Context):

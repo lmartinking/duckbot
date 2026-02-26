@@ -10,21 +10,21 @@ import pytest
 from duckbot import kdb
 
 
-KDB_Q_PATH = os.environ.get('KDB_Q_PATH')
+KDB_Q_PATH = os.environ.get("KDB_Q_PATH")
 if not KDB_Q_PATH:
     raise SkipTest("KDB_Q_PATH needs to be set")
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def kdb_server():
     port = 5000 + random.randint(0, 1000)
-    exe = [KDB_Q_PATH, '-p', f"{port}"]
+    exe = [KDB_Q_PATH, "-p", f"{port}"]
 
-    p = subprocess.Popen(exe, cwd='/')
+    p = subprocess.Popen(exe, cwd="/")
 
     time.sleep(1)  # IMPROVE: Wait for port opened...
 
-    yield 'localhost', port
+    yield "localhost", port
 
     p.kill()
 
@@ -42,4 +42,21 @@ async def test_kdb_async_query(kdb_server):
     con = kdb.make_connection(host, port, auto_open=False)
 
     ret = await kdb.query(con, "1+1")
-    assert ret == 2
+    assert ret == 2.0
+
+
+def test_kdb_roundtrip(kdb_server):
+    host, port = kdb_server
+    con = kdb.make_connection(host, port)
+
+    con.asyn("z: 123")
+    ret = con.sync("z")
+    assert ret == 123
+
+
+def test_kdb_encode_args(kdb_server):
+    host, port = kdb_server
+    con = kdb.make_connection(host, port)
+
+    ret = con.sync(".j.j", [1, 2, "four"])
+    assert ret == """[1,2,"four"]"""
