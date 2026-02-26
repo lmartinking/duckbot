@@ -1,18 +1,16 @@
-FROM python:3.10-slim-bookworm as build
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS build
 
-# Install poetry
-ENV POETRY_HOME=/opt/poetry
-RUN python3 -m venv $POETRY_HOME
-RUN $POETRY_HOME/bin/pip install poetry==1.8.2
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
+ENV UV_NO_DEV=1
+ENV UV_PYTHON_DOWNLOADS=0
+
+WORKDIR /app
 
 COPY . /app
 
-WORKDIR /app
-RUN python3 -m venv .venv
-RUN $POETRY_HOME/bin/poetry install
-RUN $POETRY_HOME/bin/poetry run python -m spacy download en_core_web_md
+RUN uv sync --locked
 
-FROM python:3.10-slim-bookworm as fortunes
+FROM docker.io/library/python:3.12-slim-bookworm as fortunes
 
 # Install fortune and extras
 RUN apt update -y && apt install -y fortune-mod fortunes-min fortunes fortunes-bofh-excuses fortune-anarchism
@@ -22,13 +20,19 @@ WORKDIR /tmp
 ADD http://mirror.linux.ro/gentoo/distfiles/Dubya-20050118.tar.gz .
 RUN tar xzvf Dubya-*.gz && mv ./dubya/dubya* /usr/share/games/fortunes
 
-FROM python:3.10-slim-bookworm
+FROM docker.io/library/python:3.12-slim-bookworm
 
 COPY --from=fortunes /usr/games/fortune /usr/games/fortune
 COPY --from=fortunes /usr/share/games/fortunes /usr/share/games/fortunes
 COPY --from=fortunes /lib/x86_64-linux-gnu/librecode.so.0 /lib/x86_64-linux-gnu/librecode.so.0
 
-COPY --from=build /app /app
+RUN groupadd --system --gid 999 nonroot && useradd --system --gid 999 --uid 999 --create-home nonroot
+
+COPY --from=build --chown=nonroot:nonroot /app /app
+
+USER nonroot
+
+WORKDIR /app
 
 CMD ["/app/.venv/bin/python", "-m", "duckbot.bot"]
 

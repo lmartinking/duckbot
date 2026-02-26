@@ -30,16 +30,12 @@ Timestamp of the message.
 
 ## Requirements
 
- * Python 3.8+
- * Poetry <https://python-poetry.org/docs>
+ * Python 3.12
+ * UV <https://docs.astral.sh/uv/>
  * KX kdb+ (Personal use licences are available free of charge from
    <https://code.kx.com/q/learn/licensing>)
 
- 1. Run `python -m venv .venv` to create a virtualenv
- 2. Run `poetry install`
- 3. Run `source .venv/bin/activate`
- 4. Run `python -m spacy download en_core_web_md`
-
+ 1. Run `uv sync --locked`
 
 ## Discord Bot Setup
 
