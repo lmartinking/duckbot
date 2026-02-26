@@ -200,7 +200,7 @@ async def help_command(ctx: commands.Context):
 
 
 async def unhandled_command(ctx: commands.Context):
-    log.info("Unhandled command: {ctx.command} args: {ctx.command.args}")
+    log.info(f"Unhandled command: {ctx.command} args: {ctx.command.args}")
 
 
 async def capycoin_command(ctx: commands.Context):
