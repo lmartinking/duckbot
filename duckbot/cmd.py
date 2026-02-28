@@ -19,6 +19,7 @@ from . config import FORTUNE_PATH, CAPYCOIN_HOST
 from . capycoin import action_signup, action_funds, action_send
 from . weather import latest_mars_weather
 from . tarot import draw_cards as draw_tarot_cards
+from . horoscope import get_horoscope
 
 
 log = logging.getLogger('cmd')
@@ -189,6 +190,7 @@ async def help_command(ctx: commands.Context):
      • `fortune` - show a random fortune!
      • `weather` - show the latest Mars weather report
      • `tarot` - draw some tarot cards
+     • `horoscope <sign>` - show the daily western or chinese horoscope for a particular sign (e.g. `horoscope aries` or `horoscope dragon`)
     """)
     if CAPYCOIN_HOST:
         message += textwrap.dedent("""
@@ -248,6 +250,21 @@ async def tarot_command(ctx: commands.Context):
         await asyncio.sleep(1)  # Add a small delay between card reveals for effect
 
 
+async def horoscope_command(ctx: commands.Context):
+    channel: TextChannel = ctx.channel
+
+    if not ctx.args:
+        await channel.send(f"The `horoscope` command takes 1 parameter: the sign (e.g. `horoscope aries`)")
+        return
+
+    sign = ctx.args[0]
+    message = await get_horoscope(sign)
+    if message:
+        await channel.send(message)
+    else:
+        await channel.send(f"Sorry, I couldn't fetch the horoscope for `{sign}`. Make sure you entered a valid sign (e.g. `aries`, `rat`, `dragon`, etc.)")
+
+
 async def process_message(guild: Guild, channel: TextChannel, user: User, message: Message, bot: commands.Bot):
     cmd_toks = [t for t in message.content.split()]
 
@@ -268,6 +285,7 @@ async def process_message(guild: Guild, channel: TextChannel, user: User, messag
         'coin':    capycoin_command,
         'weather': weather_command,
         'tarot': tarot_command,
+        'horoscope': horoscope_command,
     }
 
     cmd = cmd_map.get(cmd, unhandled_command)

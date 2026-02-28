@@ -13,7 +13,8 @@ dependencies = [
     "sparklines>=0.4.2,<0.5",
     "async-lru>=2.0.4,<3",
     "numpy<2", # Limited by spacy compatability
-    "kola>=2.2.0"
+    "kola>=2.2.0",
+    "parsel>=1.11.0",
 ]
 
 [dependency-groups]
