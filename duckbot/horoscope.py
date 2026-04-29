@@ -67,8 +67,11 @@ async def fetch_html(url: str) -> str:
 def parse_astrology_com_scope_page(html: str) -> Optional[str]:
     sel = Selector(text=html)
     if p := sel.css("div#content p").get():
+        date = sel.css("#content-date ::text").get().strip()
+        date = f"{date}: " if date else ""
         inner = Selector(text=p)
-        return " ".join(inner.css("::text").getall()).strip()
+        inner_text = " ".join(inner.css("::text").getall()).strip()
+        return f"{date}{inner_text}"
 
 
 def parse_horoscope_com_scope_page(html: str) -> Optional[str]:
