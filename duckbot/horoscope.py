@@ -25,9 +25,10 @@ def icon_for_sign(sign: str) -> Optional[str]:
     return None
 
 
-def url_for_sign(sign: str) -> str:
+def url_for_sign(sign: str, tomorrow: bool = False) -> str:
     if sign in SCOPES_WESTERN:
-        return f"https://www.astrology.com/horoscope/daily/{sign.lower()}.html"
+        day = "daily/tomorrow" if tomorrow else "daily"
+        return f"https://www.astrology.com/horoscope/{day}/{sign.lower()}.html"
     if sign in SCOPES_CHINESE:
         # These are not in "calendar" order, so we need to map them to the correct index
         idx_map = {
@@ -45,7 +46,8 @@ def url_for_sign(sign: str) -> str:
             "pig": 12,
         }
         idx = idx_map[sign.lower()]
-        return f"https://www.horoscope.com/us/horoscopes/chinese/horoscope-chinese-daily-today.aspx?sign={idx}"
+        day = "tomorrow" if tomorrow else "today"
+        return f"https://www.horoscope.com/us/horoscopes/chinese/horoscope-chinese-daily-{day}.aspx?sign={idx}"
 
 
 def parser_for_sign(sign: str) -> Optional[Callable]:
@@ -76,16 +78,24 @@ def parse_horoscope_com_scope_page(html: str) -> Optional[str]:
         return " ".join(inner.css("::text").getall()).strip()
 
 
+async def fetch_and_parse_horoscope(sign: str, tomorrow: bool = False) -> Optional[str]:
+    url = url_for_sign(sign, tomorrow=tomorrow)
+    html = await fetch_html(url)
+    parser = parser_for_sign(sign)
+    return parser(html) if parser else None
+
+
 @alru_cache(ttl=3600)
 async def get_horoscope(sign: str) -> Optional[str]:
     if sign.lower() not in (SCOPES_WESTERN + SCOPES_CHINESE):
         return None
-    url = url_for_sign(sign)
-    html = await fetch_html(url)
-    parser = parser_for_sign(sign)
-    text = parser(html) if parser else None
-    if not text:
+
+    today_text = await fetch_and_parse_horoscope(sign, tomorrow=False)
+    tomorrow_text = await fetch_and_parse_horoscope(sign, tomorrow=True)
+
+    if not any((today_text, tomorrow_text)):
         return None
+
     icon = icon_for_sign(sign) or ""
-    text = f"{icon} **{sign.capitalize()}**: {text}"
+    text = f"{icon} **{sign.capitalize()}**: {today_text}\n\n{tomorrow_text}"
     return text
