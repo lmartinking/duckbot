@@ -5,7 +5,14 @@
  * Stats per user (message counts; word counts including _nouns, verbs and adjectives_) 
  * Stats per channel (message counts; chatty users)
  * Stats per server (message counts; chatty users)
+
+### Extra Fun Features!
+
  * [CapyCoin](https://github.com/lmartinking/capycoin) integration (optional!)
+ * Mars Weather
+ * Fortunes!
+ * Tarot readings
+ * Daily horoscope for Western & Chinese signs
 
 ## Screenshots
 
