@@ -8,7 +8,7 @@ dependencies = [
     "discord.py>=2.3.2,<3",
     "spacy>=3.7.2,<3.8",
     "en-core-web-md",
-    "requests>=2.32.4,<3",
+    "requests>=2.33.0,<3",
     "contractions>=0.1.72,<0.2",
     "sparklines>=0.4.2,<0.5",
     "async-lru>=2.0.4,<3",
