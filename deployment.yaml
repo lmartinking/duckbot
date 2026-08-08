@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: duckbot-statefulset
+spec:
+  serviceName: duckbot-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: duckbot-app
+  template:
+    metadata:
+      labels:
+        app: duckbot-app
+    spec:
+      containers:
+      - name: duckbot-container
+        image: 'ghcr.io/lmartinking/duckbot:latest'
+        env:
+        - name: KDB_HOST
+          value: duckbot-kdb-service
+        - name: KDB_PORT
+          value: "5000"
+        - name: DUCKBOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: duckbot-token
+              key: discord-token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: duckbot-kdb-service
+  labels:
+    app: duckbot-kdb
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: kdb-port
+  selector:
+    app: duckbot-kdb
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: duckbot-kdb-pv-volume
+  labels:
+    type: local
+    app: duckbot-kdb
+spec:
+  storageClassName: local-path
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/srv/duckbot"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: duckbot-kdb-pv-claim
+spec:
+  volumeName: duckbot-kdb-pv-volume
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: duckbot-kdb-statefulset
+spec:
+  serviceName: duckbot-kdb-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: duckbot-kdb
+  template:
+    metadata:
+      labels:
+        app: duckbot-kdb
+    spec:
+      containers:
+      - name: duckbot-kdb-container
+        # NOTE: This is not a public image. It needs to be imported into your cluster.
+        # See: https://github.com/lmartinking/kdb-container
+        image: 'ghcr.io/lmartinking/kdb-container:latest'
+        imagePullPolicy: Never  # Because this is a private image
+        command: ["/entrypoint.sh"]
+        args: ["q", "/data", "-p", "5000"]
+        ports:
+        - containerPort: 5000
+        env:
+        # A personal use licence will need to be requested from kx. This will
+        # need to be base64 encoded. Use that to populate the secret.
+        - name: KDB_LICENSE_B64
+          valueFrom:
+            secretKeyRef:
+              name: kdb-licence
+              key: b64
+        volumeMounts:
+          - name: duckbot-kdb-data
+            mountPath: /data
+      volumes:
+        - name: duckbot-kdb-data
+          persistentVolumeClaim:
+            claimName: duckbot-kdb-pv-claim
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: kdb-licence
+stringData:
+  b64: # You will need to encode the kdb licence file into base64, eg: cat k4.lic | base64 -w 0
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: duckbot-token
+data:
+  discord-token: # Your discord bot token will need to go here
